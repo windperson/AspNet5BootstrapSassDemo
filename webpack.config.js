@@ -1,6 +1,6 @@
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 const bundleFileName = 'bundle';
 const dirName = 'wwwroot/dist';
@@ -8,6 +8,7 @@ const dirName = 'wwwroot/dist';
 module.exports = (env, argv) => {
     return {
         mode: argv.mode === "production" ? "production" : "development",
+        devtool: argv.mode === "production" ? 'hidden-source-map' : 'source-map',
         entry: [
             './node_modules/jquery/dist/jquery.js',
             './node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js',
@@ -17,7 +18,8 @@ module.exports = (env, argv) => {
         ],
         output: {
             filename: bundleFileName + '.js',
-            path: path.resolve(__dirname, dirName)
+            path: path.resolve(__dirname, dirName),
+            clean: true
         },
         module: {
             rules: [
@@ -25,7 +27,7 @@ module.exports = (env, argv) => {
                     test: /\.s[c|a]ss$/,
                     use: [
                         MiniCssExtractPlugin.loader,
-                        'css-loader',
+                        { loader: 'css-loader', options: { sourceMap: true } },
                         {
                             loader: 'postcss-loader',
                             options: {
@@ -37,19 +39,27 @@ module.exports = (env, argv) => {
                                         }
                                         return plugins;
                                     }
-                                }
+                                },
+                                sourceMap: true
                             }
                         },
-                        'sass-loader'
+                        { loader: 'sass-loader', options: { sourceMap: true } }
                     ]
                 }
             ]
         },
+        optimization: {
+            minimize: true,
+            minimizer: [
+                // For webpack@5 you can use the `...` syntax to extend existing minimizers (i.e. `terser-webpack-plugin`), uncomment the next line
+                `...`,
+                new CssMinimizerPlugin(),
+            ],
+        },
         plugins: [
-            new CleanWebpackPlugin(),
             new MiniCssExtractPlugin({
                 filename: bundleFileName + '.css'
             })
         ]
-    };
+    }
 };

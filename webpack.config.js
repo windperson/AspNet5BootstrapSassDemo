@@ -10,6 +10,7 @@ module.exports = (env, argv) => {
         mode: argv.mode === "production" ? "production" : "development",
         entry: [
             './node_modules/jquery/dist/jquery.js',
+            './node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js',
             './node_modules/bootstrap/dist/js/bootstrap.bundle.js',
             './wwwroot/js/site.js',
             './wwwroot/scss/site.scss'

@@ -1,6 +1,6 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const bundleFileName = 'bundle';
 const dirName = 'wwwroot/dist';
@@ -9,9 +9,9 @@ module.exports = (env, argv) => {
     return {
         mode: argv.mode === "production" ? "production" : "development",
         entry: [
-            './node_modules/jquery/dist/jquery.js', 
-            './node_modules/bootstrap/dist/js/bootstrap.bundle.js', 
-            './wwwroot/js/site.js', 
+            './node_modules/jquery/dist/jquery.js',
+            './node_modules/bootstrap/dist/js/bootstrap.bundle.js',
+            './wwwroot/js/site.js',
             './wwwroot/scss/site.scss'
         ],
         output: {
@@ -23,16 +23,15 @@ module.exports = (env, argv) => {
                 {
                     test: /\.s[c|a]ss$/,
                     use: [
-                        'style-loader',
                         MiniCssExtractPlugin.loader,
                         'css-loader',
                         {
                             loader: 'postcss-loader',
-                            options:{
-                                postcssOptions : {
-                                    plugins: function(){
+                            options: {
+                                postcssOptions: {
+                                    plugins: function () {
                                         let plugins = [require('autoprefixer')];
-                                        if(argv.mode === "production") {
+                                        if (argv.mode === "production") {
                                             plugins.push(require('cssnano'));
                                         }
                                         return plugins;
